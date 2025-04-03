@@ -1,0 +1,168 @@
++----------------------+
+|        User          |
++----------------------+
+| - userId: int        |
+| - name: String       |
+| - email: String      |
+| - phone: String      |
+| - address: String    |
++----------------------+
+| + register()         |
+| + login()            |
+| + placeOrder()       |
++----------------------+
+        |
+        | places
+        |
+        v
++----------------------+
+|       Order          |
++----------------------+
+| - orderId: UUID      |
+| - user: User         |
+| - restaurant: Restaurant |
+| - items: List<FoodItem> |
+| - totalAmount: double|
+| - status: OrderStatus |
+| - state: OrderState  |
++----------------------+
+| + processOrder()     |
+| + setState()         |
++----------------------+
+        |
+        | belongs to
+        v
++----------------------+
+|     FoodItem         |
++----------------------+
+| - itemId: int        |
+| - name: String       |
+| - price: double      |
+| - description: String|
++----------------------+
+
+        |
+        | served by
+        v
++----------------------+
+|    Restaurant        |
++----------------------+
+| - restaurantId: int  |
+| - name: String       |
+| - location: String   |
+| - menu: List<FoodItem> |
++----------------------+
+| + addFoodItem()      |
+| + removeFoodItem()   |
+| + acceptOrder()      |
++----------------------+
+
+        |
+        | processes
+        v
++----------------------+
+|       Payment        |
++----------------------+
+| - paymentId: UUID    |
+| - orderId: UUID      |
+| - amount: double     |
+| - status: PaymentStatus |
+| - method: PaymentMethod |
++----------------------+
+| + processPayment()   |
++----------------------+
+
+        |
+        | assigned to
+        v
++----------------------+
+|   DeliveryService    |
++----------------------+
+| - availableDeliveryPersons: List<DeliveryPerson> |
++----------------------+
+| + assignDeliveryPerson() |
++----------------------+
+
+        |
+        | delivers
+        v
++----------------------+
+|   DeliveryPerson     |
++----------------------+
+| - deliveryId: int    |
+| - name: String       |
+| - phone: String      |
++----------------------+
+| + getName()          |
++----------------------+
+
+        |
+        | defines state
+        v
++----------------------+
+|   OrderState         |<--------------------------+
++----------------------+
+| + handle(Order order)|
++----------------------+
+        ^
+        |
+        | Concrete States
+        |
++----------------------+
+|  PlacedState         |
++----------------------+
+| + handle(Order order)|
++----------------------+
+
++----------------------+
+|  PreparedState       |
++----------------------+
+| + handle(Order order)|
++----------------------+
+
++----------------------+
+|  OutForDeliveryState |
++----------------------+
+| + handle(Order order)|
++----------------------+
+
++----------------------+
+|  DeliveredState      |
++----------------------+
+| + handle(Order order)|
++----------------------+
+
+        |
+        | Payment Status Enum
+        v
++----------------------+
+|  PaymentStatus       |
++----------------------+
+| - PENDING            |
+| - SUCCESS            |
+| - FAILED             |
++----------------------+
+
+        |
+        | Payment Method Enum
+        v
++----------------------+
+|  PaymentMethod       |
++----------------------+
+| - CREDIT_CARD        |
+| - DEBIT_CARD         |
+| - UPI                |
+| - CASH               |
++----------------------+
+
+        |
+        | Order Status Enum
+        v
++----------------------+
+|  OrderStatus         |
++----------------------+
+| - PLACED             |
+| - PREPARED           |
+| - OUT_FOR_DELIVERY   |
+| - DELIVERED          |
++----------------------+
