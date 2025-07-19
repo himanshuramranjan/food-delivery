@@ -18,8 +18,10 @@ public class DeliveryService {
     }
 
     public void release(DeliveryPerson deliveryPerson) {
-        this.deliveryPersons.add(deliveryPerson);
+        this.deliveryPersons.remove(deliveryPerson);
     }
+
+    public void addDeliveryPerson(DeliveryPerson deliveryPerson) { deliveryPersons.add(deliveryPerson); }
 
     public synchronized DeliveryPerson assignDeliveryPerson() {
 
