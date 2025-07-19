@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class Order {
     private final String orderId;
-    private Restaurant restaurant;
-    private Map<String, Integer> items;
+    private final Restaurant restaurant;
+    private final Map<String, Integer> items;
     private double totalAmount;
     private OrderStatus status;
     private OrderCommand state;
@@ -23,6 +23,7 @@ public class Order {
         this.status = OrderStatus.PENDING;
     }
 
+    // ideally this method should not be here, can be given this responsibility to some CashService
     private double calculateTotalAmount() {
         double amount = 0.0;
         Map<String, FoodItem> menu = this.restaurant.getMenu();
@@ -34,10 +35,6 @@ public class Order {
 
     public String getOrderId() {
         return orderId;
-    }
-
-    public void processOrder() throws Exception {
-        this.state.handleOrder();
     }
 
     public void setStatus(OrderStatus status) {
