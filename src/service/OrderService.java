@@ -3,16 +3,14 @@ package service;
 import model.Order;
 import state.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 public class OrderService {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(5);
-    private final ReentrantLock lock = new ReentrantLock();
     private OrderService() {}
 
     private static class OrderServiceHolder {
@@ -23,28 +21,25 @@ public class OrderService {
         return OrderServiceHolder.INSTANCE;
     }
 
+    private static final List<Supplier<OrderCommand>> commandPipeline = List.of(
+            PlaceOrderCommand::new,
+            PrepareOrderCommand::new,
+            DeliverOrderCommand::new,
+            CompleteOrderCommand::new
+    );
+
     public void processOrder(Order order) {
 
-        executorService.execute(() -> {
-            lock.lock();
-            try {
-                List<OrderCommand> orderCommands = Arrays.asList(
-                        new PlaceOrderCommand(order), // Step 1: Verify payment & place order
-                        new PrepareOrderCommand(order), // Step 2: Prepare order
-                        new DeliverOrderCommand(order), // Step 3: Assign delivery & deliver order
-                        new CompleteOrderCommand(order) // Step 4: Free up the delivery person
-                );
-
-                for(OrderCommand command : orderCommands) {
-                    try {
-                        command.handleOrder();
-                    } catch (Exception e) {
-                        new CancelOrderCommand(order).handleOrder();
-                        break;
-                    }
+        executorService.submit(() -> {
+            for (Supplier<OrderCommand> commandSupplier : commandPipeline) {
+                try {
+                    OrderCommand command = commandSupplier.get();
+                    command.handleOrder(order);
+                } catch (Exception e) {
+                    System.out.println("Error occurred while processing: " + e);
+                    new CancelOrderCommand().handleOrder(order);
+                    break; // stop pipeline on failure
                 }
-            } finally {
-                lock.unlock();
             }
         });
     }
