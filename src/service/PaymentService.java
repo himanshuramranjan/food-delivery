@@ -1,18 +1,14 @@
 package service;
 
 public class PaymentService {
-    private static volatile PaymentService paymentService;
     private PaymentService() {}
 
+    private static class PaymentServiceHolder {
+        private static final PaymentService INSTANCE = new PaymentService();
+    }
+
     public static PaymentService getInstance() {
-        if(paymentService == null) {
-            synchronized (PaymentService.class) {
-                if(paymentService == null) {
-                    paymentService = new PaymentService();
-                }
-            }
-        }
-        return paymentService;
+        return PaymentServiceHolder.INSTANCE;
     }
 
     public boolean processPayment(double amount) {

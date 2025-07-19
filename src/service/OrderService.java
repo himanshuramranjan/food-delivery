@@ -13,18 +13,14 @@ public class OrderService {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(5);
     private final ReentrantLock lock = new ReentrantLock();
-    private static volatile OrderService orderService;
     private OrderService() {}
 
+    private static class OrderServiceHolder {
+        private static final OrderService INSTANCE = new OrderService();
+    }
+
     public static OrderService getInstance() {
-        if(orderService == null) {
-            synchronized (OrderService.class) {
-                if(orderService == null) {
-                    orderService = new OrderService();
-                }
-            }
-        }
-        return orderService;
+        return OrderServiceHolder.INSTANCE;
     }
 
     public void processOrder(Order order) {
