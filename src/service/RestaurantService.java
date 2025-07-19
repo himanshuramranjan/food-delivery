@@ -7,20 +7,16 @@ import java.util.Comparator;
 import java.util.List;
 
 public class RestaurantService {
-    private static volatile RestaurantService restaurantService;
     private final List<Restaurant> restaurantList;
 
     private RestaurantService() {this.restaurantList = new ArrayList<>(); }
 
+    private static class RestaurantServiceHolder {
+        private static final RestaurantService INSTANCE = new RestaurantService();
+    }
+
     public static RestaurantService getInstance() {
-        if(restaurantService == null) {
-            synchronized (RestaurantService.class) {
-                if(restaurantService == null) {
-                    restaurantService = new RestaurantService();
-                }
-            }
-        }
-        return restaurantService;
+        return RestaurantServiceHolder.INSTANCE;
     }
 
     public void addRestaurant(List<Restaurant> restaurants) {

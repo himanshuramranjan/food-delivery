@@ -4,24 +4,20 @@ import model.DeliveryPerson;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class DeliveryService {
-    private static volatile DeliveryService deliveryService;
-    private ConcurrentLinkedDeque<DeliveryPerson> deliveryPersons;
+    private final ConcurrentLinkedDeque<DeliveryPerson> deliveryPersons;
     private DeliveryService() {
         this.deliveryPersons = new ConcurrentLinkedDeque<>();
     }
 
-    public static DeliveryService getInstance() {
-        if(deliveryService == null) {
-            synchronized (DeliveryService.class) {
-                if(deliveryService == null) {
-                    deliveryService = new DeliveryService();
-                }
-            }
-        }
-        return deliveryService;
+    private static class DeliveryServiceHolder {
+        private static final DeliveryService INSTANCE = new DeliveryService();
     }
 
-    public void addDeliveryPerson(DeliveryPerson deliveryPerson) {
+    public static DeliveryService getInstance() {
+        return DeliveryServiceHolder.INSTANCE;
+    }
+
+    public void release(DeliveryPerson deliveryPerson) {
         this.deliveryPersons.add(deliveryPerson);
     }
 
