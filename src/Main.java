@@ -18,7 +18,7 @@ public class Main {
 
         Restaurant bestRestaurant = RestaurantService.getInstance().getBestRestaurant();
         bestRestaurant.getMenu();
-        OrderService.getInstance().processOrder(new Order(bestRestaurant, Map.of("BUG001", 1)));
+        RestaurantService.getInstance().placeOrder(bestRestaurant, Map.of("BUG001", 2));
     }
 
     public static void initialize() {
@@ -32,5 +32,6 @@ public class Main {
         RestaurantService.getInstance().addRestaurant(List.of(restaurant));
 
         DeliveryPerson dp1 = new DeliveryPerson("Mike", "9876543210");
+        DeliveryService.getInstance().addDeliveryPerson(dp1);
     }
 }
