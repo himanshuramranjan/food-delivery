@@ -60,10 +60,14 @@ public class Restaurant {
     }
 
     public void addRating(int rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating should be between 1 and 5");
+        }
+
         lock.writeLock().lock();
         try {
             this.ratingCount += 1;
-            this.avgRating = (getAvgRating() + rating) / getRatingCount();
+            this.avgRating = ((avgRating * (ratingCount - 1)) + rating) / ratingCount;
         } finally {
             lock.writeLock().unlock();
         }
