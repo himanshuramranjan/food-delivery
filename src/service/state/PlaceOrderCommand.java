@@ -1,4 +1,4 @@
-package state;
+package service.state;
 
 import enums.OrderStatus;
 import model.Order;
@@ -6,14 +6,8 @@ import service.PaymentService;
 
 public class PlaceOrderCommand implements OrderCommand {
 
-    private final Order order;
-
-    public PlaceOrderCommand(Order order) {
-        this.order = order;
-    }
-
     @Override
-    public void handleOrder() throws Exception {
+    public void handleOrder(Order order) throws Exception {
         boolean isPaymentDone = PaymentService.getInstance().processPayment(order.getTotalAmount());
         if(isPaymentDone) {
             order.setStatus(OrderStatus.PLACED);
