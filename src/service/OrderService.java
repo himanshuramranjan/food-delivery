@@ -1,7 +1,7 @@
 package service;
 
 import model.Order;
-import state.*;
+import service.state.*;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
