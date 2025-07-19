@@ -1,7 +1,7 @@
 package model;
 
 import enums.OrderStatus;
-import state.OrderCommand;
+import service.state.OrderCommand;
 
 import java.util.Map;
 import java.util.UUID;

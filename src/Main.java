@@ -32,6 +32,5 @@ public class Main {
         RestaurantService.getInstance().addRestaurant(List.of(restaurant));
 
         DeliveryPerson dp1 = new DeliveryPerson("Mike", "9876543210");
-        DeliveryService.getInstance().addDeliveryPerson(dp1);
     }
 }
