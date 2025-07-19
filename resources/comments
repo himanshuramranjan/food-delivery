@@ -1,0 +1,8 @@
+> Why not to pass the Order in constructor of OrderCommand
+
+Decoupled Instantiation & Execution: The OrderCommand becomes reusable and testable without tightly coupling to a
+specific Order instance at construction time.
+Keeps OrderCommand stateless and idempotent.
+Makes the command creation easier to manage using method references or lambdas.
+Cleaner pipeline setup with simple suppliers like PlaceOrderCommand::new.
+
