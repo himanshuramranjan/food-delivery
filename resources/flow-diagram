@@ -1,0 +1,46 @@
+App
+ |
+ |  RestaurantService.getInstance().getBestRestaurant()
+ |  RestaurantService.getInstance().placeOrder(user, restaurant, foodItems)
+ v
+RestaurantService
+ |
+ |  validate user, restaurant, and items
+ |  create Order object
+ |  OrderService.getInstance().processOrder(order)
+ v
+OrderService
+ |
+ |  executorService.execute(orderHandler)
+ |
+ |  Inside orderHandler thread:
+ |     for each command in [PlaceOrder, PrepareOrder, DeliverOrder, CompleteOrder]
+ |        command.handleOrder()
+ |
+ v
+PlaceOrderCommand
+ |
+ |  validate order
+ |  simulate payment
+ |  mark order as PLACED
+ v
+PrepareOrderCommand
+ |
+ |  simulate food preparation
+ |  mark order as PREPARED
+ v
+DeliverOrderCommand
+ |
+ |  DeliveryService.getInstance().assignDeliveryPerson()
+ |  assign delivery person to order
+ |  simulate delivery
+ |  mark order as DELIVERED
+ v
+CompleteOrderCommand
+ |
+ |  free delivery person
+ |  mark order as COMPLETED
+ v
+Final: Order marked COMPLETED + DeliveryPerson becomes AVAILABLE
+
+(On failure in any step → CancelOrderCommand is triggered)

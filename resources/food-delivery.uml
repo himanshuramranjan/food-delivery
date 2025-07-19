@@ -1,168 +1,97 @@
-+----------------------+
-|        User          |
-+----------------------+
-| - userId: int        |
-| - name: String       |
-| - email: String      |
-| - phone: String      |
-| - address: String    |
-+----------------------+
-| + register()         |
-| + login()            |
-| + placeOrder()       |
-+----------------------+
-        |
-        | places
-        |
-        v
-+----------------------+
-|       Order          |
-+----------------------+
-| - orderId: UUID      |
-| - user: User         |
-| - restaurant: Restaurant |
-| - items: List<FoodItem> |
-| - totalAmount: double|
-| - status: OrderStatus |
-| - state: OrderState  |
-+----------------------+
-| + processOrder()     |
-| + setState()         |
-+----------------------+
-        |
-        | belongs to
-        v
-+----------------------+
-|     FoodItem         |
-+----------------------+
-| - itemId: int        |
-| - name: String       |
-| - price: double      |
-| - description: String|
-+----------------------+
++-----------------------+
+|       FoodItem        |
++-----------------------+
+| - itemId: String      |
+| - name: String        |
+| - price: double       |
++-----------------------+
 
-        |
-        | served by
-        v
-+----------------------+
-|    Restaurant        |
-+----------------------+
-| - restaurantId: int  |
-| - name: String       |
-| - location: String   |
-| - menu: List<FoodItem> |
-+----------------------+
-| + addFoodItem()      |
-| + removeFoodItem()   |
-| + acceptOrder()      |
-+----------------------+
++----------------------------+
+|        Restaurant          |
++----------------------------+
+| - restaurantId: String     |
+| - name: String             |
+| - location: String         |
+| - menu: List<FoodItem>     |
++----------------------------+
+| + addFoodItem(List)        |
+| + getMenu(): List<FoodItem>|
++----------------------------+
 
-        |
-        | processes
-        v
-+----------------------+
-|       Payment        |
-+----------------------+
-| - paymentId: UUID    |
-| - orderId: UUID      |
-| - amount: double     |
-| - status: PaymentStatus |
-| - method: PaymentMethod |
-+----------------------+
-| + processPayment()   |
-+----------------------+
++-----------------------------+
+|      DeliveryPerson         |
++-----------------------------+
+| - name: String              |
+| - phone: String             |
++-----------------------------+
 
-        |
-        | assigned to
-        v
-+----------------------+
-|   DeliveryService    |
-+----------------------+
-| - availableDeliveryPersons: List<DeliveryPerson> |
-+----------------------+
-| + assignDeliveryPerson() |
-+----------------------+
++-------------------------------+
+|           Order               |
++-------------------------------+
+| - orderId: UUID               |
+| - restaurant: Restaurant      |
+| - items: Map<String, Integer>|
+| - status: OrderStatus         |
++-------------------------------+
 
-        |
-        | delivers
-        v
-+----------------------+
-|   DeliveryPerson     |
-+----------------------+
-| - deliveryId: int    |
-| - name: String       |
-| - phone: String      |
-+----------------------+
-| + getName()          |
-+----------------------+
++------------------------------+
+|        OrderStatus (enum)    |
++------------------------------+
+| - PLACED                     |
+| - PREPARING                  |
+| - OUT_FOR_DELIVERY           |
+| - COMPLETED                  |
+| - CANCELLED                  |
++------------------------------+
 
-        |
-        | defines state
-        v
-+----------------------+
-|   OrderState         |<--------------------------+
-+----------------------+
-| + handle(Order order)|
-+----------------------+
-        ^
-        |
-        | Concrete States
-        |
-+----------------------+
-|  PlacedState         |
-+----------------------+
-| + handle(Order order)|
-+----------------------+
++---------------------------+
+|        OrderCommand       |  <<interface>>
++---------------------------+
+| + handleOrder(): void     |
++---------------------------+
+         /|\  (implements)
+          |
+  -----------------------------------------------
+  |             |             |         |        |
+  v             v             v         v        v
++---------------------+  +---------------------+  ...
+| PlaceOrderCommand   |  | PrepareOrderCommand |  etc.
++---------------------+  +---------------------+
+| + handleOrder()     |  | + handleOrder()     |
++---------------------+  +---------------------+
 
-+----------------------+
-|  PreparedState       |
-+----------------------+
-| + handle(Order order)|
-+----------------------+
++-------------------------------+
+|        OrderService           |
++-------------------------------+
+| - executorService: Executor   |
+| - lock: ReentrantLock         |
++-------------------------------+
+| + processOrder(Order): void   |
+| + getInstance(): OrderService|
++-------------------------------+
 
-+----------------------+
-|  OutForDeliveryState |
-+----------------------+
-| + handle(Order order)|
-+----------------------+
++---------------------------------+
+|         RestaurantService       |
++---------------------------------+
+| - restaurants: List<Restaurant> |
++---------------------------------+
+| + addRestaurant(List)           |
+| + getBestRestaurant(): Restaurant |
+| + getInstance(): RestaurantService |
++----------------------------------+
 
-+----------------------+
-|  DeliveredState      |
-+----------------------+
-| + handle(Order order)|
-+----------------------+
++----------------------------------+
+|         DeliveryService          |
++----------------------------------+
+| - deliveryPeople: List<DeliveryPerson> |
++----------------------------------+
+| + addDeliveryPerson(DeliveryPerson)   |
+| + getInstance(): DeliveryService      |
++----------------------------------+
 
-        |
-        | Payment Status Enum
-        v
-+----------------------+
-|  PaymentStatus       |
-+----------------------+
-| - PENDING            |
-| - SUCCESS            |
-| - FAILED             |
-+----------------------+
-
-        |
-        | Payment Method Enum
-        v
-+----------------------+
-|  PaymentMethod       |
-+----------------------+
-| - CREDIT_CARD        |
-| - DEBIT_CARD         |
-| - UPI                |
-| - CASH               |
-+----------------------+
-
-        |
-        | Order Status Enum
-        v
-+----------------------+
-|  OrderStatus         |
-+----------------------+
-| - PLACED             |
-| - PREPARED           |
-| - OUT_FOR_DELIVERY   |
-| - DELIVERED          |
-+----------------------+
++---------------------------+
+|            Main           |
++---------------------------+
+| + main(String[]): void    |
+| + initialize(): void      |
++---------------------------+
