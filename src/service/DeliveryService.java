@@ -23,13 +23,8 @@ public class DeliveryService {
 
     public void addDeliveryPerson(DeliveryPerson deliveryPerson) { deliveryPersons.add(deliveryPerson); }
 
-    public synchronized DeliveryPerson assignDeliveryPerson() {
-
-        // can use some strategies to assign the delivery person
-        if(deliveryPersons.isEmpty()) {
-            System.out.println("All delivery person are busy right now");
-            return null;
-        }
-        return deliveryPersons.getFirst();
+    public DeliveryPerson assignDeliveryPerson() {
+        return deliveryPersons.pollFirst();
     }
+
 }
