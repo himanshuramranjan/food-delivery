@@ -1,11 +1,14 @@
 package model;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 public class FoodItem {
     private final String itemId;
     private String name;
     private double price;
     private double avgRating;
     private int ratingCount;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public FoodItem(String itemId, String name, double price) {
         this.itemId = itemId;
@@ -44,8 +47,17 @@ public class FoodItem {
     }
 
     public void addRating(int rating) {
-        this.ratingCount += 1;
-        this.avgRating = (getAvgRating() + rating) / getRatingCount();
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating should be between 1 and 5");
+        }
+
+        lock.writeLock().lock();
+        try {
+            ratingCount++;
+            avgRating = ((avgRating * (ratingCount - 1)) + rating) / ratingCount;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
 }
