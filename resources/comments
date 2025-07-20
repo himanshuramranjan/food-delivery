@@ -6,3 +6,19 @@ Keeps OrderCommand stateless and idempotent.
 Makes the command creation easier to manage using method references or lambdas.
 Cleaner pipeline setup with simple suppliers like PlaceOrderCommand::new.
 
+> can I get any issue like while checking if the deque is empty (isEmpty()) and then getting the first element (getFirst()) in two separate operations.
+  Between these two calls, another thread might remove the first element.
+  So, getFirst() might throw a NoSuchElementException if the list becomes empty after the check.
+
+public synchronized DeliveryPerson assignDeliveryPerson() {
+    if (deliveryPersons.isEmpty()) {
+        System.out.println("All delivery person are busy right now");
+        return null;
+    }
+    return deliveryPersons.getFirst();
+}
+
+ans : No this wont happen
+
+Only one thread at a time can enter and execute this method on the same object instance.
+Once Thread A enters this method, no other thread can enter assignDeliveryPerson() on the same instance until Thread A completes.
