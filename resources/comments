@@ -27,3 +27,23 @@ Once Thread A enters this method, no other thread can enter assignDeliveryPerson
 processed or not (return true/false) from each of the handler
 
 > Rating Service can be integrated post delivery of the Order
+
+> Another simplified version of OrderProcessing can be designed like below (no command pattern for each step, instead
+responsibilities are distributed across:
+
+RestaurantService :
+Queue<deliveryPerson>
+List<Restaurant>
+
++ placeOrder() {
+ PaymentService.processPayment()
+ if(paymentDone) -> {
+                       Restaurant.prepareOrder()
+                       assignDeliveryPerson()
+                     }
+}
+
+- assignDeliveryPerson() {
+ poll the free deliveryPerson
+ deliveryPerson.deliverOrder()
+}
