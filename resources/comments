@@ -22,3 +22,8 @@ ans : No this wont happen
 
 Only one thread at a time can enter and execute this method on the same object instance.
 Once Thread A enters this method, no other thread can enter assignDeliveryPerson() on the same instance until Thread A completes.
+
+> A better way to handle each of the process would be to check in OrderService if each of the handle is
+processed or not (return true/false) from each of the handler
+
+> Rating Service can be integrated post delivery of the Order
